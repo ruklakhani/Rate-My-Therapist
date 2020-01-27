@@ -21,25 +21,28 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarColor01">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Features</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Pricing</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">About</a>
-            </li>
-        </ul>
-            <ul class="navbar-right">
-            {{#if user}}
-                <a class="navbar-item align-middle info-text" href="/logout">Log Out</a>
-            {{/if}}
-        </ul>
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Features</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Pricing</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+            </ul>
+            <ul class="navbar-right mt-3">
+                {{#if user}}
+                    <a class="navbar-item info-text text-white" href="/logout">Log Out</a>
+                    {{else}}
+                    <a class="navbar-item info-text text-white mr-3" href="/login">Login</a>
+                    <a class="navbar-item info-text text-white btn btn-secondary" href="/signup">Sign Up</a>
+                {{/if}}
+            </ul>
         </div>
     </nav>
 
