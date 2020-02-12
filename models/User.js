@@ -4,16 +4,13 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
   email: { type: String, unique: true },
-  name: { type: String },
+  name: String,
   password: String,
   passwordResetToken: String,
   passwordResetExpires: Date,
   emailVerificationToken: String,
   emailVerified: Boolean,
-  tokens: Array,
-  profile: {
-    name: String
-  }
+  tokens: Array
 }, { timestamps: true });
 
 /**
