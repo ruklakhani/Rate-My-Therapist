@@ -47,7 +47,22 @@ const app = express();
 
 // Create `ExpressHandlebars` instance with a default layout.
 hbs = exphbs.create({
-  defaultLayout: 'main'
+  defaultLayout: 'main',
+  helpers: {
+    // {{#stars <rating average here>}}{{/stars}}  --will output--> html for stars!
+    stars: function (avg) {
+      var html = '';
+      for(var i = 0; i < 5; ++i) {
+        if (avg - i >= 1) {
+          html += "<i class='star fa fa-star' aria-hidden='true'></i>"
+        } else if (avg - i >= .5) {
+          html += "<i class='star fa fa-star-half-o' aria-hidden='true'></i>"
+        } else {
+          html += "<i class='star fa fa-star-o' aria-hidden='true'></i>"
+        }
+      } return html;
+    },
+  }
 });
 
 /**
