@@ -1,5 +1,11 @@
 <div class="col-md-6 offset-md-3 thumbnail">
-    {{#each therapists}}
-        test
-    {{/each}}
+    {{#if therapists}}
+        {{#each therapists}}
+            <p>{{this.name}}</p>
+            <p>{{this.averageRating}}/5</p>
+            <div class="stars">{{#stars this.averageRating}}{{/stars}}</div>
+        {{/each}}
+    {{else}}
+        Can't find any therapists by that name! Would you like to add a therapist?
+    {{/if}}
 </div>
