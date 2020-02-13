@@ -38,6 +38,6 @@ exports.searchTherapists = (req, res) => {
         { $project: {_id:0, name:"$_id.name", averageRating: "$_id.avg", ratings: 1}}
    ]).then(function (res) {
      console.log(res);
-   });;
+   });
 
 };
