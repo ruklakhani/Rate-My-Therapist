@@ -13,7 +13,7 @@ const randomBytesAsync = promisify(crypto.randomBytes);
 
 exports.searchTherapists = (req, res) => {
     Therapist.aggregate([
-        { $match: {"name": "Bill Smith"} },
+        { $match: {"name": req.params.query} },
         { $unwind: "$therapist_rating" },
         {
             $group: {
@@ -36,8 +36,11 @@ exports.searchTherapists = (req, res) => {
             }
         },
         { $project: {_id:0, name:"$_id.name", averageRating: "$_id.avg", ratings: 1}}
-   ]).then(function (res) {
-     console.log(res);
+   ]).then(function (results) {
+       console.log(results)
+     res.render('listTherapists', {
+         therapists: results
+     })
    });
 
 };

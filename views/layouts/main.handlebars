@@ -18,12 +18,12 @@
 <nav class="navbar navbar-light navbar-expand-md sticky-top navigation-clean-button dark-blue-bg">
    <div class="container-fluid"><a class="navbar-brand text-white" href="/"><span class="fa fa-globe"></span> Rate My Therapist</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
       <div class="collapse navbar-collapse" id="navcol-1">
-         <form class="form-inline search-form col-md-6" action="/search" method="get">
+         <form class="form-inline search-form col-md-6" id="searchForm">
             <div class="input-group col-md-10">
                <div class="input-group-prepend">
                   <span class="input-group-text"><i class="fa fa-search"></i></span>
                </div>
-               <input class="form-control" type="text" name="query" placeholder="Search therapist by name...">
+               <input class="form-control" type="text" name="query" id="search" placeholder="Search therapist by name...">
                <div class="input-group-append">
                   <button class="btn btn-light" type="submit">Search</button>
                </div>
@@ -66,3 +66,11 @@
     
 </body>
 </html>
+
+
+<script>
+    $("#searchForm").submit(function(e) {
+        e.preventDefault();
+        window.location = `/search/${$("#search").val()}`
+    });
+</script>

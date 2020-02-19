@@ -1,8 +1,8 @@
 <div class="col-md-6 offset-md-3 thumbnail">
     {{#if therapists}}
         {{#each therapists}}
-            <p>{{this.name}}</p>
-            <p>{{this.averageRating}}/5</p>
+            <p>{{name}}</p>
+            <p>{{averageRating}}/5</p>
             <div class="stars">{{#stars this.averageRating}}{{/stars}}</div>
         {{/each}}
     {{else}}
