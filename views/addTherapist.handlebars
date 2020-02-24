@@ -1,0 +1,10 @@
+
+<div class="jumbotron">
+    <h1 class="text-center">Add Your Therapist</h1>
+    <form id="add-form" method="POST" action="/add">
+        <input type="hidden" name="_csrf" value="{{_csrf}}" />
+        <input class="mb-2 form-control" name="therapistName" type="text" placeholder="Therapist Name" required>
+        <input class="mb-2 form-control" name="group" type="text" placeholder="Insurance Group">
+        <button class="btn btn-success" type="submit">Next</button>
+    </form>
+</div>

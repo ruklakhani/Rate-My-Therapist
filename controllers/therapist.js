@@ -37,10 +37,35 @@ exports.searchTherapists = (req, res) => {
         },
         { $project: {_id:0, name:"$_id.name", averageRating: "$_id.avg", ratings: 1}}
    ]).then(function (results) {
-       console.log(results)
-     res.render('listTherapists', {
-         therapists: results
-     })
+        console.log(results);
+        res.render('listTherapists', {
+            therapists: results
+        })
    });
 
+};
+
+exports.getAddForm = (req, res) => {
+  res.render('addTherapist', {
+  title: 'Add Therapist'
+  });
+};
+
+exports.getRate = (req, res) => {
+  res.render('rateTherapist', {
+  title: 'Rate a Therapist'
+  });
+};
+
+exports.addTherapist = (req, res) => {
+    var newTherapist = new Therapist({
+        name: req.body.therapistName,
+        group: req.body.group,
+        therapist_rating: []
+    });
+    newTherapist.save(function (err) {
+        if (err) return console.error(err);
+    });
+    req.flash('success', { msg: "Therapist added!" });
+    res.redirect("/rate")
 };

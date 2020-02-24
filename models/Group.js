@@ -1,9 +1,7 @@
 const mongoose = require('mongoose');
 
 const groupSchema = new mongoose.Schema({
-  name: String,
-  group: String,
-  rating: Array
+  name: String
 }, { timestamps: true });
 
 

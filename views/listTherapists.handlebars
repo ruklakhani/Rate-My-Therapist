@@ -2,10 +2,14 @@
     {{#if therapists}}
         {{#each therapists}}
             <p>{{name}}</p>
-            <p>{{averageRating}}/5</p>
-            <div class="stars">{{#stars this.averageRating}}{{/stars}}</div>
+            {{#if averageRating}}
+                <p>{{averageRating}}/5</p>
+                <div class="stars">{{#stars this.averageRating}}{{/stars}}</div>
+            {{/if}}
         {{/each}}
     {{else}}
-        Can't find any therapists by that name! Would you like to add a therapist?
+        <p class="text-muted">Can't find any therapists by that name! Would you like to <strong>add a therapist?</strong></p>
+        <a href="/add" class="btn btn-success">Add Therapist</a>
+
     {{/if}}
 </div>
