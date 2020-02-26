@@ -45,6 +45,7 @@ exports.searchTherapists = async (req, res, next) =>  {
 
     const therapistsWithAverages = await Promise.all(results) // Wrap up all therapist objects with star averages
     res.render('listTherapists', {
+        query: req.params.query,
         therapists: therapistsWithAverages
     });
 
