@@ -1,10 +1,10 @@
 <div class="col-md-6 offset-md-3 thumbnail">
     {{#if therapists}}
         {{#each therapists}}
-            <p>{{name}}</p>
-            {{#if averageRating}}
-                <p>{{averageRating}}/5</p>
-                <div class="stars">{{#stars this.averageRating}}{{/stars}}</div>
+            <p>{{this.0.name}}</p>
+            {{#if this.0.averageRating}}
+                <p>{{this.0.averageRating}}/5</p>
+                <div class="stars">{{#stars this.0.averageRating}}{{/stars}}</div>
             {{/if}}
         {{/each}}
     {{else}}

@@ -13,122 +13,40 @@ const randomBytesAsync = promisify(crypto.randomBytes);
 
 exports.searchTherapists = async (req, res, next) =>  {
 
+    const therapists = await Therapist.find({ name: { $regex: req.params.query } }) // Get therapists by name
 
-    let therapistsWithAverages = [];
+    const results = therapists.map(therapist => { // Calculate star averages for each therapist
+        return Therapist.aggregate([
+            { $match: { _id: therapist._id} },
+                { $unwind: "$therapist_rating" },
+                {
+                    $group: {
+                        _id : "$name",
+                        avg: {$avg: "$therapist_rating.therapist_rating" },
+                        ratings: {$push: "$therapist_rating.therapist_rating" }
+                    }
+                },
+                { $unwind: "$ratings" },
+                { 
+                    $group: {
+                        _id: { name: "$_id", num: "$ratings", avg: "$avg" },
+                        count: { $sum: 1 }              
+                    }
+                },
+                {
+                    $group: {
+                        _id: { name: "$_id.name", avg: "$_id.avg" },
+                        ratings: { $push: { num: "$_id.num", count: "$count" }}
+                    }
+                },
+                { $project: {_id:0, name:"$_id.name", averageRating: "$_id.avg", ratings: 1}}
+        ]);
+    });
 
-    Therapist.find(
-        { name: { $regex: req.params.query } }
-        ).then(therapists => {
-
-            therapists.map(therapist => {
-
-                Therapist.aggregate([
-                    { $match: { _id: therapist._id} },
-                    { $unwind: "$therapist_rating" },
-                    {
-                        $group: {
-                            _id : "$name",
-                            avg: {$avg: "$therapist_rating.therapist_rating" },
-                            ratings: {$push: "$therapist_rating.therapist_rating" }
-                        }
-                    },
-                    { $unwind: "$ratings" },
-                    { 
-                        $group: {
-                            _id: { name: "$_id", num: "$ratings", avg: "$avg" },
-                            count: { $sum: 1 }              
-                        }
-                    },
-                    {
-                        $group: {
-                            _id: { name: "$_id.name", avg: "$_id.avg" },
-                            ratings: { $push: { num: "$_id.num", count: "$count" }}
-                        }
-                    },
-                    { $project: {_id:0, name:"$_id.name", averageRating: "$_id.avg", ratings: 1}}
-                ]);
-
-            });
-        });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // Therapist.find(
-    //     { name: { $regex: req.params.query } }
-    //     ).then(therapists => {
-
-
-
-    //         let therapistResults = [];
-
-    //         await function buildTherapists() {
-    //             const x = await new Promise(r => {
-    //                 for(let i = 0; i < therapists.length; i++) {
-    //                     Therapist.aggregate([
-    //                         { $match: { _id: therapists[i]._id} },
-    //                         { $unwind: "$therapist_rating" },
-    //                         {
-    //                             $group: {
-    //                                 _id : "$name",
-    //                                 avg: {$avg: "$therapist_rating.therapist_rating" },
-    //                                 ratings: {$push: "$therapist_rating.therapist_rating" }
-    //                             }
-    //                         },
-    //                         { $unwind: "$ratings" },
-    //                         { 
-    //                             $group: {
-    //                                 _id: { name: "$_id", num: "$ratings", avg: "$avg" },
-    //                                 count: { $sum: 1 }              
-    //                             }
-    //                         },
-    //                         {
-    //                             $group: {
-    //                                 _id: { name: "$_id.name", avg: "$_id.avg" },
-    //                                 ratings: { $push: { num: "$_id.num", count: "$count" }}
-    //                             }
-    //                         },
-    //                         { $project: {_id:0, name:"$_id.name", averageRating: "$_id.avg", ratings: 1}}
-    //                     ]).then(function (results) {
-    //                         therapistResults.push(results);
-    //                         console.log(results)
-    //                     });
-    //                 }
-    //             })
-    //         }
-
-          
-    //         console.log(x)
-
-
-
-
-
-
-
-
-
-
-        // console.log(therapistResults);
-        // res.render('listTherapists', {
-        //     therapists: therapistResults
-        // });
+    const therapistsWithAverages = await Promise.all(results) // Wrap up all therapist objects with star averages
+    res.render('listTherapists', {
+        therapists: therapistsWithAverages
+    });
 
 };
 
