@@ -1,3 +1,29 @@
-<p>{{therapist.name}}</p>
+
+<h1>{{therapist.name}}</h1>
+<p>{{therapist.group}}</p>
+
+<!-- ?.? / 5 -->
 <p>{{therapist.averageRating}}/5</p>
+
+<!-- # of reviews -->
+<p>{{therapist.therapist_rating.length}}</p>
+
+<!-- stars for rating average -->
 <div class="stars">{{#stars therapist.averageRating}}{{/stars}}</div>
+
+<br><br>
+<h3>Reviews:</h3>
+<!-- reviews -->
+{{#if therapist.therapist_rating}}
+    <!-- For each rating -->
+    {{#each therapist.therapist_rating}}
+        <!-- rating num -->
+        {{this.rating}}/5<br>
+        <!-- stars for rating average -->
+        <div class="stars">{{#stars this.rating}}{{/stars}}</div><br>
+        <!-- reviewer's name -->
+        {{this.name}}<br>
+        <!-- review text -->
+        {{this.content}}<br><br>
+    {{/each}}
+{{/if}}

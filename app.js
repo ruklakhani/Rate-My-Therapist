@@ -168,6 +168,7 @@ app.post('/account/delete', passportConfig.isAuthenticated, userController.postD
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
 
 app.get('/search/:query', therapistController.searchTherapists);
+app.get('/viewTherapist_test', therapistController.showTherapist);
 
 /**
  * Error Handler.
@@ -185,6 +186,6 @@ if (process.env.NODE_ENV === 'development') {
 /**
  * Start Express server.
  */
-app.listen(process.env.PORT || 5000)
+app.listen(process.env.PORT || 5000);
 
 module.exports = app;

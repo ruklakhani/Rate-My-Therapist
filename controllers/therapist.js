@@ -156,3 +156,22 @@ exports.addTherapist = (req, res) => {
     req.flash('success', { msg: "Therapist added!" });
     res.redirect("/rate")
 };
+
+exports.showTherapist = (req, res) => {
+    res.render('viewTherapist', {
+        title: 'Therapist Reviews',
+        therapist: {
+            'name': 'Henry Crow',
+            'group': 'The Group',
+            'averageRating': 3.9,
+            'therapist_rating': [
+                {'rating': 5, 'name': 'cool_guy', 'content': "great dude!"},
+                {'rating': 1, 'name': 'am_angery', 'content': "he kinda sucks tho"},
+                {'rating': 5, 'name': 'bill_boi42', 'content': "been seeing him for years"},
+                {'rating': 4.5, 'name': 'bro0o0o0o', 'content': "rad"},
+                {'rating': 3, 'name': 'idkman1437', 'content': "ok i guess"},
+                {'rating': 5, 'name': 'heuhehueh', 'content': "!!!!!!SO COOL!!!!!"}
+            ],
+        }
+    });
+};
