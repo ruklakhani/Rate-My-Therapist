@@ -13,7 +13,7 @@ const randomBytesAsync = promisify(crypto.randomBytes);
 
 exports.searchTherapists = async (req, res, next) =>  {
 
-    const therapists = await Therapist.find({ name: { $regex: req.params.query } }) // Get therapists by name
+    const therapists = await Therapist.find({ name: { $regex: req.params.query } }); // Get therapists by name
 
     const results = therapists.map(therapist => { // Calculate star averages for each therapist
         return Therapist.aggregate([
@@ -39,11 +39,13 @@ exports.searchTherapists = async (req, res, next) =>  {
                         ratings: { $push: { num: "$_id.num", count: "$count" }}
                     }
                 },
-                { $project: {_id:0, name:"$_id.name", averageRating: "$_id.avg", ratings: 1}}
+                { $project: {_id:therapist._id, name:"$_id.name", averageRating: "$_id.avg", ratings: 1}}
         ]);
     });
 
-    const therapistsWithAverages = await Promise.all(results) // Wrap up all therapist objects with star averages
+    const therapistsWithAverages = await Promise.all(results); // Wrap up all therapist objects with star averages
+    console.log(therapistsWithAverages);
+
     res.render('listTherapists', {
         query: req.params.query,
         therapists: therapistsWithAverages
@@ -61,6 +63,16 @@ exports.getRate = (req, res) => {
   res.render('rateTherapist', {
   title: 'Rate a Therapist'
   });
+};
+
+exports.showTherapist = async (req, res) => {
+    let therapist = await Therapist.findById(req.params.id);
+    console.log(therapist);
+
+    res.render('viewTherapist', {
+        title: 'Therapist',
+        therapist: therapist
+    });
 };
 
 exports.addTherapist = (req, res) => {
