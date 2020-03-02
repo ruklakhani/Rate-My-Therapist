@@ -13,7 +13,7 @@ const randomBytesAsync = promisify(crypto.randomBytes);
 
 exports.searchTherapists = async (req, res, next) =>  {
 
-    const therapists = await Therapist.find({ name: { $regex: req.params.query } }) // Get therapists by name
+    const therapists = await Therapist.find({ name: { $regex: req.params.query, '$options' : 'i' } }) // Get therapists by name
 
     const results = therapists.map(therapist => { // Calculate star averages for each therapist
         return Therapist.aggregate([

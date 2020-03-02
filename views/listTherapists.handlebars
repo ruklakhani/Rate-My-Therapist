@@ -1,3 +1,7 @@
+{{#if therapists}}
+    <p class="offset-md-3">Showing results for <strong>{{query}}</strong>.</p>
+{{/if}}
+
 <div class="col-md-6 offset-md-3 thumbnail card p-4">
     {{#if therapists}}
         {{#each therapists}}
@@ -18,7 +22,7 @@
             </div>
         {{/each}}
     {{else}}
-        <p class="text-muted">Can't find any therapists by that name! Would you like to <strong>add a therapist?</strong></p>
+        <p class="text-muted"><strong>{{query}}</strong> is not in our system! Would you like to <strong>add a therapist?</strong></p>
         <a href="/add" class="btn btn-success">Add Therapist</a>
 
     {{/if}}
