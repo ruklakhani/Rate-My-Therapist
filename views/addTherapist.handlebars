@@ -1,10 +1,20 @@
 
-<div class="jumbotron">
-    <h1 class="text-center">Add Your Therapist</h1>
-    <form id="add-form" method="POST" action="/add">
-        <input type="hidden" name="_csrf" value="{{_csrf}}" />
-        <input class="mb-2 form-control" name="therapistName" type="text" placeholder="Therapist Name" required>
-        <input class="mb-2 form-control" name="group" type="text" placeholder="Insurance Group">
-        <button class="btn btn-success" type="submit">Next</button>
-    </form>
+<div class="col-md-4 offset-md-4">
+     <h2>Add Therapist</h2>
+    <div class="jumbotron">
+        <form id="add-form" method="POST" action="/add">
+            <input type="hidden" name="_csrf" value="{{_csrf}}" />
+            <label for="therapistName" class="mb-2">Therapist Name</label>
+            <input class="mb-2 form-control" name="therapistName" type="text" placeholder="Bill Smith" required="true" autofocus="true">
+            <hr>
+            <label for="groupSelector" class="mb-2">Therapy Group</label>
+            <select class="selectpicker" data-live-search="true" name="groupSelector" data-style="btn-secondary">
+                {{#each groups}}
+                    <option data-tokens="{{_id}}">{{name}}</option>
+                {{/each}}
+            </select>
+
+            <button class="btn btn-success btn-block mt-4" type="submit">Add </button>
+        </form>
+    </div>
 </div>

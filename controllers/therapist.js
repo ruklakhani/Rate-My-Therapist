@@ -1,4 +1,5 @@
 const Therapist = require('../models/Therapist');
+const Group = require('../models/Group');
 
 
 exports.searchTherapists = async (req, res, next) =>  {
@@ -51,9 +52,16 @@ exports.searchTherapists = async (req, res, next) =>  {
 };
 
 exports.getAddForm = (req, res) => {
-  res.render('addTherapist', {
-  title: 'Add Therapist'
-  });
+    Group.find(function(err, groups) {
+        if(err) {
+            res.send(err);
+        } else {
+            res.render('addTherapist', {
+                title: 'Add Therapist',
+                groups: groups
+            });
+        }
+    });
 };
 
 exports.getRate = (req, res) => {
@@ -75,7 +83,7 @@ exports.showTherapist = async (req, res) => {
 exports.addTherapist = (req, res) => {
     var newTherapist = new Therapist({
         name: req.body.therapistName,
-        group: req.body.group,
+        group: req.body.groupSelector,
         therapist_rating: []
     });
     newTherapist.save(function (err) {

@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
 const groupSchema = new mongoose.Schema({
-  name: String
+  name: String,
+  url: String
 }, { timestamps: true });
 
 
