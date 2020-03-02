@@ -1,14 +1,4 @@
-const { promisify } = require('util');
-const crypto = require('crypto');
-const nodemailer = require('nodemailer');
-const passport = require('passport');
-const _ = require('lodash');
-const validator = require('validator');
-const mailChecker = require('mailchecker');
-const User = require('../models/User');
 const Therapist = require('../models/Therapist');
-
-const randomBytesAsync = promisify(crypto.randomBytes);
 
 
 exports.searchTherapists = async (req, res, next) =>  {
@@ -39,12 +29,19 @@ exports.searchTherapists = async (req, res, next) =>  {
                         ratings: { $push: { num: "$_id.num", count: "$count" }}
                     }
                 },
-                { $project: {_id:therapist._id, name:"$_id.name", averageRating: "$_id.avg", ratings: 1}}
+                { $project: {_id:therapist._id, name:"$_id.name", averageRating: "$_id.avg", ratings: 1}},
+                {
+                    $lookup: {
+                        from: "groups",
+                        localField: "id",
+                        foreignField: therapist.group,
+                        as: "group"
+                      }
+                 }
         ]);
     });
 
     const therapistsWithAverages = await Promise.all(results); // Wrap up all therapist objects with star averages
-    console.log(therapistsWithAverages);
 
     res.render('listTherapists', {
         query: req.params.query,

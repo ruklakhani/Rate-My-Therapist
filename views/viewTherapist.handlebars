@@ -11,7 +11,11 @@
                 <p class="card-text">Therapy group: {{therapist.group}}</p>
                 <p class="card-text">
                     <!-- ?.? / 5 -->
-                    {{therapist.averageRating}}/5
+                    {{#if this.0.averageRating}}
+                        <div class="row pl-3">
+                            <strong>{{this.0.averageRating}} / 5</strong> <div class="stars ml-2">{{#stars this.0.averageRating}}{{/stars}}</div>
+                        </div>
+                    {{/if}}
                     <br>
                     <div class="stars">{{#stars therapist.averageRating}}{{/stars}}</div>
                     <!-- # of reviews -->
@@ -21,19 +25,19 @@
         </div>
     </div>
     <div class="card-footer w-100 text-muted">
-        <h3>Reviews:</h3>
+        <h3 class="mt-4">Reviews </h3>
         <div class="card-body">
         <!-- reviews -->
         {{#if therapist.therapist_rating}}
             <!-- For each rating -->
             {{#each therapist.therapist_rating}}
-            <p>________________</p>
-                <!-- rating num -->
+                {{#unless @first}}<hr>{{/unless}}
+                    <!-- rating num -->
                 {{this.therapist_rating}}/5<br>
                 <!-- stars for rating average -->
                 <div class="stars">{{#stars this.therapist_rating}}{{/stars}}</div><br>
                 <!-- reviewer's name -->
-<!--                {{this.name}}<br>-->
+                <!-- {{this.name}}<br>-->
                 <!-- review text -->
                 {{this.review}}<br><br>
             {{/each}}
