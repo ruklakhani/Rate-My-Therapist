@@ -1,3 +1,46 @@
-<p>{{therapist.name}}</p>
-<p>{{therapist.averageRating}}/5</p>
-<div class="stars">{{#stars therapist.averageRating}}{{/stars}}</div>
+<div class="card">
+    {{# if therapist.name }}
+    <div class="row no-gutters">
+        <div class="col-auto">
+            <img src="https://cdn.dribbble.com/users/247591/screenshots/1385293/gnome_icon-01.png" width="300" height="300" class="img-fluid" alt="">
+        </div>
+        <div class="col">
+            <div class="card-block px-2">
+                <br>
+                <h4 class="card-title">{{therapist.name}}</h4>
+                <p class="card-text">Therapy group: {{therapist.group}}</p>
+                <p class="card-text">
+                    <!-- ?.? / 5 -->
+                    {{therapist.averageRating}}/5
+                    <br>
+                    <div class="stars">{{#stars therapist.averageRating}}{{/stars}}</div>
+                    <!-- # of reviews -->
+                    {{therapist.therapist_rating.length}} total reviews
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer w-100 text-muted">
+        <h3>Reviews:</h3>
+        <div class="card-body">
+        <!-- reviews -->
+        {{#if therapist.therapist_rating}}
+            <!-- For each rating -->
+            {{#each therapist.therapist_rating}}
+            <p>________________</p>
+                <!-- rating num -->
+                {{this.therapist_rating}}/5<br>
+                <!-- stars for rating average -->
+                <div class="stars">{{#stars this.therapist_rating}}{{/stars}}</div><br>
+                <!-- reviewer's name -->
+<!--                {{this.name}}<br>-->
+                <!-- review text -->
+                {{this.review}}<br><br>
+            {{/each}}
+        {{/if}}
+        </div>
+    </div>
+    {{ else }}
+        <h1 class="card-title m-4 text-center">Therapist not found :(</h1>
+    {{/if}}
+</div>

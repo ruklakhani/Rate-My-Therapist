@@ -12,8 +12,9 @@
                 <div class="col-md-9">
                     <p><a href="/therapist/{{this.0._id}}">{{this.0.name}}</a></p>
                     {{#if this.0.averageRating}}
-                        <p>{{this.0.averageRating}}/5</p>
-                        <div class="stars">{{#stars this.0.averageRating}}{{/stars}}</div>
+                        <div class="row pl-3">
+                            <strong>{{this.0.averageRating}} / 5</strong> <div class="stars ml-2">{{#stars this.0.averageRating}}{{/stars}}</div>
+                        </div>
                     {{/if}}
                 </div>
                 <div class="col-md-2">
