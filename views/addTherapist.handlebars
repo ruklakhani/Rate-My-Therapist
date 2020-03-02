@@ -8,9 +8,9 @@
             <input class="mb-2 form-control" name="therapistName" type="text" placeholder="Bill Smith" required="true" autofocus="true">
             <hr>
             <label for="groupSelector" class="mb-2">Therapy Group</label>
-            <select class="selectpicker" data-live-search="true" name="groupSelector" data-style="btn-secondary">
+            <select class="selectpicker" data-live-search="true" name="groupSelector" id="groupSelector" data-style="btn-secondary">
                 {{#each groups}}
-                    <option data-tokens="{{_id}}">{{name}}</option>
+                    <option data-tokens="{{_id}}" value="{{_id}}">{{name}}</option>
                 {{/each}}
             </select>
 
