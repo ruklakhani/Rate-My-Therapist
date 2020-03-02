@@ -44,9 +44,18 @@ exports.searchTherapists = async (req, res, next) =>  {
 
     const therapistsWithAverages = await Promise.all(results); // Wrap up all therapist objects with star averages
 
+    const finalResults = [];
+
+    therapistsWithAverages.map(therapist => {
+        if(therapist.length > 0) {
+            finalResults.push(therapist);
+        }
+    })
+
+
     res.render('listTherapists', {
         query: req.params.query,
-        therapists: therapistsWithAverages
+        therapists: finalResults
     });
 
 };
@@ -72,16 +81,15 @@ exports.getRate = (req, res) => {
 
 exports.showTherapist = async (req, res) => {
     let therapist = await Therapist.findById(req.params.id);
-    console.log(therapist);
 
     res.render('viewTherapist', {
-        title: 'Therapist',
+        title: therapist.name,
         therapist: therapist
     });
 };
 
 exports.addTherapist = (req, res) => {
-    var newTherapist = new Therapist({
+    const newTherapist = new Therapist({
         name: req.body.therapistName,
         group: req.body.groupSelector,
         therapist_rating: []

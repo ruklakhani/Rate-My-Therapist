@@ -148,7 +148,7 @@ app.use('/webfonts', express.static(path.join(__dirname, 'node_modules/@fortawes
  */
 app.get('/', homeController.index);
 app.get('/rate', therapistController.getRate);
-app.get('/add', therapistController.getAddForm);
+app.get('/add', passportConfig.isAuthenticated, therapistController.getAddForm);
 app.post('/add', therapistController.addTherapist);
 app.get('/login', userController.getLogin);
 app.post('/login', userController.postLogin);
