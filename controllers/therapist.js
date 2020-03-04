@@ -48,7 +48,8 @@ exports.searchTherapists = async (req, res, next) =>  {
  
     res.render('listTherapists', {
         query: req.params.query,
-        therapists: therapistsWithAverages
+        therapists: therapistsWithAverages,
+        title: req.params.query
     });
 };
 

@@ -9,9 +9,14 @@
                 <hr>
             {{/unless}}
                 <div class="row">
-                    <div class="col-md-9">
-                        <p><a href="/therapist/{{this.0._id}}">{{this.0.name}}</a>
+                    <div class="col-md-2">
+                        <img class="rounded thumbnail w-100" src="{{this.0.imageUrl}}" />
+                    </div>
+                    <div class="col-md-8">
+                        <p class="mb-0"><a href="/therapist/{{this.0._id}}">{{this.0.name}}</a>
                         {{#if this.0.group}}<small> from <strong><a href="/group/{{this.0.group._id}}" class="text-secondary">{{this.0.group.name}}</a></strong></small>{{/if}}
+                        <br>
+                        <p class="text-muted"><small>{{this.0.description}}</small></p>
                         </p>
                         <div class="row pl-3">
                             {{#if this.0.averageRating}}
