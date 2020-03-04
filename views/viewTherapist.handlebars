@@ -26,12 +26,10 @@
                             <small><strong>{{#toFixed this.therapist.0.averageRating}}{{/toFixed}} / 5</strong></small>
                         </div>
                     </div>
-                        {{else}}
-                            <strong>No reviews yet</strong>
-                        {{/if}}
+                {{/if}}
                 <br>
                 <!-- # of reviews -->
-                {{reviews.length}} total reviews
+                {{#if reviews}}{{reviews.length}} total reviews{{/if}}
             </p>
         </div>
         <div class="w-100 p-5 {{#if user}}bg-primary{{else}}dark-blue-bg{{/if}} text-light">
@@ -60,8 +58,12 @@
                 <h3 class="m-5 text-center"><a href="/login">Login</a> to leave a review!</h3>
             {{/if}}
         </div>
-        <div class="card-footer w-100 text-muted">
+        <div class="card-footer w-100 text-muted {{#if reviews}}{{else}}dark-blue-bg text-white{{/if}}">
+          {{#if reviews}}
             <h3 class="mt-4"><strong>Reviews</strong></h3>
+          {{else}}
+            <h3 class="text-center mt-5"><strong>No Reviews Yet</strong></h3>
+          {{/if}}
             <div class="card-body">
             <!-- reviews -->
             {{#if reviews}}
@@ -188,7 +190,7 @@ $(function () {
     // Append popover to #rateMe to allow handling form inside the popover
     container: '#rateMe',
     // Custom content for popover
-    content: `<div class="my-0 py-0"> <textarea type="text" style="font-size: 0.78rem" class="md-textarea form-control py-0" placeholder="Write us what can we improve" rows="3"></textarea> <button id="voteSubmitButton" type="submit" class="btn btn-sm btn-primary">Submit!</button> <button id="closePopoverButton" class="btn btn-flat btn-sm">Close</button>  </div>`
+    content: `<div class="my-0 py-0"> <p class="mt-2">Leave a review: </p> <textarea type="text" style="font-size: 0.78rem" class="md-textarea form-control py-0" placeholder="Write us what can we improve" rows="3"></textarea> <button id="voteSubmitButton" type="submit" class="btn btn-sm btn-primary">Submit!</button> <button id="closePopoverButton" class="btn btn-flat btn-sm">Close</button>  </div>`
   });
   $('.rate-popover').tooltip();
 });
