@@ -11,7 +11,7 @@ exports.searchTherapists = async (req, res, next) =>  {
                 const group = await Group.findOne({ _id: therapist.group }, function(err, group) { if(err) { return console.log(err); } return group });  // Sloppy... Learn how to aggregate correctly.
                 therapist.group = group
             }
-            return Therapist.aggregate([
+            const therapistWithAverage = await Therapist.aggregate([
                 { $match: { _id: therapist._id} },
                 { $unwind: "$therapist_rating" },
                 {
@@ -34,8 +34,9 @@ exports.searchTherapists = async (req, res, next) =>  {
                         ratings: { $push: { num: "$_id.num", count: "$count" }}
                     }
                 },
-                { $project: {_id:therapist._id, name:"$_id.name", averageRating: "$_id.avg", ratings: 1}},
-            ]);
+                { $project: {_id:therapist._id, name:"$_id.name", description: therapist.description, imageUrl: therapist.imageUrl, averageRating: "$_id.avg", ratings: 1}},
+            ])
+            return therapistWithAverage
         } else {
             // if the therapist does not have any ratings
             const group = await Group.findOne({ _id: therapist.group }, function(err, group) { if(err) { return console.log(err); } return group }); // Sloppy... Learn how to aggregate correctly.
@@ -45,7 +46,7 @@ exports.searchTherapists = async (req, res, next) =>  {
     });
 
     const therapistsWithAverages = await Promise.all(results); // Wrap up all therapist objects with star averages
- 
+
     res.render('listTherapists', {
         query: req.params.query,
         therapists: therapistsWithAverages,
@@ -74,10 +75,12 @@ exports.getRate = (req, res) => {
 
 exports.showTherapist = async (req, res) => {
     let therapist = await Therapist.findById(req.params.id);
+    let group = await Group.findById(therapist.group);
 
     res.render('viewTherapist', {
         title: therapist.name,
-        therapist: therapist
+        therapist: therapist,
+        group: group
     });
 };
 

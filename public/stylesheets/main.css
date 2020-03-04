@@ -12,3 +12,12 @@
 .stars {
 	color: #56CC9D;
 }
+
+.search {
+	border: solid #6CC3D5 3px;border-radius:10px;
+}
+
+.index-icon {
+	width: 110px;
+	height: 110px;
+}

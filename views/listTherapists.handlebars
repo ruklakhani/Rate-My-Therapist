@@ -9,7 +9,7 @@
                 <hr>
             {{/unless}}
                 <div class="row">
-                    <div class="col-md-2">
+                    <div class="col-md-2 overflow-hidden">
                         <img class="rounded thumbnail w-100" src="{{this.0.imageUrl}}" />
                     </div>
                     <div class="col-md-8">
@@ -26,8 +26,8 @@
                             {{/if}}
                         </div>
                     </div>
-                    <div class="col-md-2">
-                        <input type="button" class="btn btn-outline-info btn-sm m-3" value="Rate" />
+                    <div class="col-md-2 mt-4">
+                        <a href="/therapist/{{this.0._id}}" class="btn btn-outline-info btn-sm mt-3">Rate</a>
                     </div>
                 </div>
             {{#if @last}}
