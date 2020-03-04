@@ -3,12 +3,12 @@ const Group = require('../models/Group');
 
 
 exports.searchTherapists = async (req, res, next) =>  {
-
+    const finalResults = [];
     const therapists = await Therapist.find({ name: { $regex: req.params.query, '$options' : 'i' } }) // Get therapists by name
-
     const results = therapists.map(therapist => { // Calculate star averages for each therapist
-        return Therapist.aggregate([
-            { $match: { _id: therapist._id} },
+        if (therapist.therapist_rating.length > 0) {
+            return Therapist.aggregate([
+                { $match: { _id: therapist._id} },
                 { $unwind: "$therapist_rating" },
                 {
                     $group: {
@@ -31,20 +31,29 @@ exports.searchTherapists = async (req, res, next) =>  {
                     }
                 },
                 { $project: {_id:therapist._id, name:"$_id.name", averageRating: "$_id.avg", ratings: 1}},
-                {
-                    $lookup: {
-                        from: "groups",
-                        localField: "id",
-                        foreignField: therapist.group,
-                        as: "group"
-                      }
+                { $lookup: {
+                    from: "groups",
+                    localField: "id",
+                    foreignField: therapist.group,
+                    as: "group"
+                    }
+                }
+            ]);
+        } else {
+            return Therapist.aggregate([
+                { $match: { _id: therapist._id} },
+                { $lookup: {
+                    from: "groups",
+                    localField: "id",
+                    foreignField: therapist.group,
+                    as: "group"
+                    }
                  }
-        ]);
+            ]);
+        }
     });
 
     const therapistsWithAverages = await Promise.all(results); // Wrap up all therapist objects with star averages
-
-    const finalResults = [];
 
     therapistsWithAverages.map(therapist => {
         if(therapist.length > 0) {
@@ -52,7 +61,7 @@ exports.searchTherapists = async (req, res, next) =>  {
         }
     })
 
-
+    console.log(finalResults);
     res.render('listTherapists', {
         query: req.params.query,
         therapists: finalResults

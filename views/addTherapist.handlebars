@@ -1,19 +1,19 @@
 
-<div class="col-md-4 offset-md-4">
-     <h2>Add Therapist</h2>
+<div class="col-md-4 offset-md-4 pt-4">
     <div class="jumbotron">
+        <h3>Add Your Therapist</h3>
+        <hr>
         <form id="add-form" method="POST" action="/add">
             <input type="hidden" name="_csrf" value="{{_csrf}}" />
-            <label for="therapistName" class="mb-2">Therapist Name</label>
-            <input class="mb-2 form-control" name="therapistName" type="text" placeholder="Bill Smith" required="true" autofocus="true">
-            <hr>
-            <label for="groupSelector" class="mb-2">Therapy Group</label>
-            <select class="selectpicker" data-live-search="true" name="groupSelector" id="groupSelector" data-style="btn-secondary">
+            <label for="therapistName" class="mb-2">Name</label>
+            <input class="mb-2 form-control mb-4" name="therapistName" type="text" placeholder="Bill Smith" required="true" autofocus="true">
+            <label for="groupSelector">Therapy Group</label>
+            <select class="selectpicker mb-4" data-live-search="true" name="groupSelector" id="groupSelector" data-style="btn-secondary">
                 {{#each groups}}
                     <option data-tokens="{{_id}}" value="{{_id}}">{{name}}</option>
                 {{/each}}
             </select>
-
+            <hr>
             <button class="btn btn-success btn-block mt-4" type="submit">Add </button>
         </form>
     </div>

@@ -8,19 +8,27 @@
             {{#unless @first}}
                 <hr>
             {{/unless}}
-            <div class="row">
-                <div class="col-md-9">
-                    <p><a href="/therapist/{{this.0._id}}">{{this.0.name}}</a> {{#if this.0.group}}<small>from <strong><a href="/group/{{this.0.group.0._id}}" class="text-secondary">{{this.0.group.0.name}}</strong></small>{{/if}}</a></p>
-                    {{#if this.0.averageRating}}
+                <div class="row">
+                    <div class="col-md-9">
+                        <p><a href="/therapist/{{this.0._id}}">{{this.0.name}}</a> {{#if this.0.group}}<small>from <strong><a href="/group/{{this.0.group.0._id}}" class="text-secondary">{{this.0.group.0.name}}</strong></small>{{/if}}</a></p>
                         <div class="row pl-3">
-                            <strong>{{this.0.averageRating}} / 5</strong> <div class="stars ml-2">{{#stars this.0.averageRating}}{{/stars}}</div>
+                            {{#if this.0.averageRating}}
+                                <strong>{{this.0.averageRating}} / 5</strong> <div class="stars ml-2">{{#stars this.0.averageRating}}{{/stars}}</div>
+                            {{else}}
+                                <strong>No reviews yet</strong>
+                            {{/if}}
                         </div>
-                    {{/if}}
+                    </div>
+                    <div class="col-md-2">
+                        <input type="button" class="btn btn-outline-info mt-3" value="Rate" />
+                    </div>
                 </div>
-                <div class="col-md-2">
-                    <input type="button" class="btn btn-outline-info mt-3" value="Rate" />
-                </div>
+            {{#if @last}}
+            <hr>
+            <div class="text-center mt-3">
+                <small><p>Therapist not listed here? <a href="/add">Add Therapist</a></p></small>
             </div>
+            {{/if}}
         {{/each}}
     {{else}}
         <p class="text-muted"><strong>{{query}}</strong> is not in our system! Would you like to <strong>add a therapist?</strong></p>
