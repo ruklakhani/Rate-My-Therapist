@@ -1,8 +1,8 @@
 {{#if therapists}}
-    <p class="offset-md-3">Showing results for <strong>{{query}}</strong>.</p>
+    <p class="offset-md-2">Showing results for <strong>{{query}}</strong></p>
 {{/if}}
 
-<div class="col-md-6 offset-md-3 thumbnail card p-4">
+<div class="col-md-8 offset-md-2 thumbnail card p-4">
     {{#if therapists}}
         {{#each therapists}}
             {{#unless @first}}
@@ -10,7 +10,9 @@
             {{/unless}}
                 <div class="row">
                     <div class="col-md-9">
-                        <p><a href="/therapist/{{this.0._id}}">{{this.0.name}}</a> {{#if this.0.group}}<small>from <strong><a href="/group/{{this.0.group.0._id}}" class="text-secondary">{{this.0.group.0.name}}</strong></small>{{/if}}</a></p>
+                        <p><a href="/therapist/{{this.0._id}}">{{this.0.name}}</a>
+                        {{#if this.0.group}}<small> from <strong><a href="/group/{{this.0.group._id}}" class="text-secondary">{{this.0.group.name}}</a></strong></small>{{/if}}
+                        </p>
                         <div class="row pl-3">
                             {{#if this.0.averageRating}}
                                 <strong>{{this.0.averageRating}} / 5</strong> <div class="stars ml-2">{{#stars this.0.averageRating}}{{/stars}}</div>
@@ -20,7 +22,7 @@
                         </div>
                     </div>
                     <div class="col-md-2">
-                        <input type="button" class="btn btn-outline-info mt-3" value="Rate" />
+                        <input type="button" class="btn btn-outline-info btn-sm m-3" value="Rate" />
                     </div>
                 </div>
             {{#if @last}}

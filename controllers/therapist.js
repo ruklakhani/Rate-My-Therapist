@@ -5,8 +5,12 @@ const Group = require('../models/Group');
 exports.searchTherapists = async (req, res, next) =>  {
     const finalResults = [];
     const therapists = await Therapist.find({ name: { $regex: req.params.query, '$options' : 'i' } }) // Get therapists by name
-    const results = therapists.map(therapist => { // Calculate star averages for each therapist
-        if (therapist.therapist_rating.length > 0) {
+    const results = therapists.map(async (therapist) => { // Calculate star averages for each therapist
+        if (therapist.therapist_rating.length > 0) { // if the therapist has ratings
+            if(therapist.group.length > 0) { // if the therapist belongs to a group
+                const group = await Group.findOne({ _id: therapist.group }, function(err, group) { if(err) { return console.log(err); } return group });  // Sloppy... Learn how to aggregate correctly.
+                therapist.group = group
+            }
             return Therapist.aggregate([
                 { $match: { _id: therapist._id} },
                 { $unwind: "$therapist_rating" },
@@ -21,7 +25,7 @@ exports.searchTherapists = async (req, res, next) =>  {
                 { 
                     $group: {
                         _id: { name: "$_id", num: "$ratings", avg: "$avg" },
-                        count: { $sum: 1 }              
+                        count: { $sum: 1 }
                     }
                 },
                 {
@@ -31,42 +35,21 @@ exports.searchTherapists = async (req, res, next) =>  {
                     }
                 },
                 { $project: {_id:therapist._id, name:"$_id.name", averageRating: "$_id.avg", ratings: 1}},
-                { $lookup: {
-                    from: "groups",
-                    localField: "id",
-                    foreignField: therapist.group,
-                    as: "group"
-                    }
-                }
             ]);
         } else {
-            return Therapist.aggregate([
-                { $match: { _id: therapist._id} },
-                { $lookup: {
-                    from: "groups",
-                    localField: "id",
-                    foreignField: therapist.group,
-                    as: "group"
-                    }
-                 }
-            ]);
+            // if the therapist does not have any ratings
+            const group = await Group.findOne({ _id: therapist.group }, function(err, group) { if(err) { return console.log(err); } return group }); // Sloppy... Learn how to aggregate correctly.
+            therapist.group = group
+            return [therapist]
         }
     });
 
     const therapistsWithAverages = await Promise.all(results); // Wrap up all therapist objects with star averages
-
-    therapistsWithAverages.map(therapist => {
-        if(therapist.length > 0) {
-            finalResults.push(therapist);
-        }
-    })
-
-    console.log(finalResults);
+ 
     res.render('listTherapists', {
         query: req.params.query,
-        therapists: finalResults
+        therapists: therapistsWithAverages
     });
-
 };
 
 exports.getAddForm = (req, res) => {
