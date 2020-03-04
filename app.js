@@ -56,7 +56,7 @@ hbs = exphbs.create({
         if (avg - i >= 1) {
           html += "<i class='star fa fa-star' aria-hidden='true'></i>"
         } else if (avg - i >= .5) {
-          html += "<i class='star fa fa-star-half-o' aria-hidden='true'></i>"
+          html += "<i class='star fas fa-star-half' aria-hidden='true'></i>"
         } else {
           html += "<i class='star fa fa-star-o' aria-hidden='true'></i>"
         }
@@ -149,7 +149,7 @@ app.use('/webfonts', express.static(path.join(__dirname, 'node_modules/@fortawes
 app.get('/', homeController.index);
 app.get('/rate', therapistController.getRate);
 app.get('/add', passportConfig.isAuthenticated, therapistController.getAddForm);
-app.post('/add', therapistController.addTherapist);
+app.post('/add', passportConfig.isAuthenticated, therapistController.addTherapist);
 app.get('/login', userController.getLogin);
 app.post('/login', userController.postLogin);
 app.get('/logout', userController.logout);
