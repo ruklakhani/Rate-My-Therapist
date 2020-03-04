@@ -3,7 +3,6 @@ const Group = require('../models/Group');
 
 
 exports.searchTherapists = async (req, res, next) =>  {
-    const finalResults = [];
     const therapists = await Therapist.find({ name: { $regex: req.params.query, '$options' : 'i' } }) // Get therapists by name
     const results = therapists.map(async (therapist) => { // Calculate star averages for each therapist
         if (therapist.therapist_rating.length > 0) { // if the therapist has ratings
@@ -74,20 +73,69 @@ exports.getRate = (req, res) => {
 };
 
 exports.postRate = (req, res) => {
-    Therapist.update({ _id: req.body.for }, { $push: { therapist_rating: { review: req.body.review, therapist_rating: parseInt(req.body.rating) } } }).then((err, therapist) => {
-        if(err) return req.flash("errors", { msg: err });
-        req.flash("success", { msg: `Review for <strong>${therapist.name}</strong> has been submitted!` });
-        res.redirect('/');
-    });
+    if (req.body.review.length < 2 || req.body.review == ' ' || req.body.rating == 0) {
+        res.send({ done: true });
+    } else {
+        Therapist.update({ _id: req.body.for }, { $push: { therapist_rating: { review: req.body.review, therapist_rating: parseInt(req.body.rating), by: req.user._id } } }).then(() => {
+            res.send({ done: true });
+        });
+    }
 }
 
 exports.showTherapist = async (req, res) => {
     let therapist = await Therapist.findById(req.params.id);
     let group = await Group.findById(therapist.group);
 
+    async function checkIfAlreadyReviewed(therapist) {
+        result = await therapist.therapist_rating.map((review) => {
+            if (String(req.user._id) === String(review.by)) {
+                return review
+            }
+        });
+
+        return result
+    }
+
+
+
+    async function checkIfTherapistHasReviews(therapist) {
+        if(therapist.therapist_rating.length > 0) {
+            const therapistWithAverage = await Therapist.aggregate([
+                { $match: { _id: therapist._id} },
+                { $unwind: "$therapist_rating" },
+                {
+                    $group: {
+                        _id : "$name",
+                        avg: {$avg: "$therapist_rating.therapist_rating" },
+                        ratings: {$push: "$therapist_rating.therapist_rating" }
+                    }
+                },
+                { $unwind: "$ratings" },
+                { 
+                    $group: {
+                        _id: { name: "$_id", num: "$ratings", avg: "$avg" },
+                        count: { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: { name: "$_id.name", avg: "$_id.avg" },
+                        ratings: { $push: { num: "$_id.num", count: "$count" }}
+                    }
+                },
+                { $project: {_id:therapist._id, name:"$_id.name", description: therapist.description, imageUrl: therapist.imageUrl, averageRating: "$_id.avg", ratings: 1}},
+            ])
+            return therapistWithAverage
+        } else {
+            return [therapist]
+        }
+    }
+
     res.render('viewTherapist', {
         title: therapist.name,
-        therapist: therapist,
+        therapist: await checkIfTherapistHasReviews(therapist),
+        reviews: therapist.therapist_rating,
+        reviewed: await checkIfAlreadyReviewed(therapist),
         group: group
     });
 };

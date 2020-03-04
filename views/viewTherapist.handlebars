@@ -9,41 +9,53 @@
 <div class="card">
     <div class="row no-gutters">
         <div class="col-md-2 m-3">
-            <img src="{{therapist.imageUrl}}" class="img-fluid rounded w-100" alt="{{therapist.name}}">
+            <img src="{{this.therapist.0.imageUrl}}" class="img-fluid rounded w-100" alt="{{this.therapist.0.name}}">
         </div>
         <div class="col-md-9 m-3">
-            <h1 class="card-title mb-0 display-5"><strong>{{therapist.name}}</strong></h1>
+            <h1 class="card-title mb-0 display-5"><strong>{{this.therapist.0.name}}</strong></h1>
             <p class="card-text"><a class="text-secondary" href="/group/{{group._id}}">{{group.name}}</a></p>
             <p class="card-text">
-                {{therapist.description}}
+                {{this.therapist.0.description}}
                 <!-- ?.? / 5 -->
-                {{#if this.0.averageRating}}
-                    <strong>{{this.0.averageRating}} / 5</strong> <div class="stars ml-2">{{#stars this.0.averageRating}}{{/stars}}</div>
-                {{/if}}
+                {{#if this.therapist.0.averageRating}}
+                    <div class="col-md-6 ml-0 pl-0 row">
+                        <div class="stars ml-0 pl-0 pr-0 col-md-3 float-left">
+                            {{#stars this.therapist.0.averageRating}}{{/stars}}
+                        </div>
+                        <div class="col-md-8 ml-0 pl-0 float-left">
+                            <small><strong>{{#toFixed this.therapist.0.averageRating}}{{/toFixed}} / 5</strong></small>
+                        </div>
+                    </div>
+                        {{else}}
+                            <strong>No reviews yet</strong>
+                        {{/if}}
                 <br>
-                <div class="stars">{{#stars therapist.averageRating}}{{/stars}}</div>
                 <!-- # of reviews -->
-                {{therapist.therapist_rating.length}} total reviews
+                {{reviews.length}} total reviews
             </p>
         </div>
         <div class="w-100 p-5 {{#if user}}bg-primary{{else}}dark-blue-bg{{/if}} text-light">
             {{#if user}}
-                <p class="lead text-center">Rate your experience with <strong>{{therapist.name}}</strong>
-                    <div class="m-4">
-                         <span id="rateMe">
-                            <i class="far fa-star py-2 px-1 rate-popover" data-index="0" data-html="true" data-toggle="popover"
-                            data-placement="top" title="Very bad"></i>
-                            <i class="far fa-star py-2 px-1 rate-popover" data-index="1" data-html="true" data-toggle="popover"
-                            data-placement="top" title="Poor"></i>
-                            <i class="far fa-star py-2 px-1 rate-popover" data-index="2" data-html="true" data-toggle="popover"
-                            data-placement="top" title="OK"></i>
-                            <i class="far fa-star py-2 px-1 rate-popover" data-index="3" data-html="true" data-toggle="popover"
-                            data-placement="top" title="Good"></i>
-                            <i class="far fa-star py-2 px-1 rate-popover" data-index="4" data-html="true" data-toggle="popover"
-                            data-placement="top" title="Excellent"></i>
-                        </span>
-                    </div>
-                </p>
+                {{#if reviewed}}
+                <h3 class="m-5 text-center">You rated {{this.therapist.0.name}} <strong>{{this.reviewed.0.therapist_rating}} stars.</strong></h3>
+                    {{else}}
+                     <p class="lead text-center">Rate your experience with <strong>{{this.therapist.0.name}}</strong>
+                        <div class="text-center" style="font-size: 2rem;">
+                                <span id="rateMe">
+                                <i class="far fa-star py-2 px-1 rate-popover" data-index="0" data-html="true" data-toggle="popover"
+                                data-placement="top" title="Very bad"></i>
+                                <i class="far fa-star py-2 px-1 rate-popover" data-index="1" data-html="true" data-toggle="popover"
+                                data-placement="top" title="Poor"></i>
+                                <i class="far fa-star py-2 px-1 rate-popover" data-index="2" data-html="true" data-toggle="popover"
+                                data-placement="top" title="OK"></i>
+                                <i class="far fa-star py-2 px-1 rate-popover" data-index="3" data-html="true" data-toggle="popover"
+                                data-placement="top" title="Good"></i>
+                                <i class="far fa-star py-2 px-1 rate-popover" data-index="4" data-html="true" data-toggle="popover"
+                                data-placement="top" title="Excellent"></i>
+                            </span>
+                        </div>
+                    </p>
+                {{/if}}
             {{else}}
                 <h3 class="m-5 text-center"><a href="/login">Login</a> to leave a review!</h3>
             {{/if}}
@@ -52,11 +64,11 @@
             <h3 class="mt-4"><strong>Reviews</strong></h3>
             <div class="card-body">
             <!-- reviews -->
-            {{#if therapist.therapist_rating}}
+            {{#if reviews}}
                 <!-- For each rating -->
-                <div class="row">
-                    {{#each therapist.therapist_rating}}
-                        <div class="col-md-3 card bg-white p-4 m-2">
+                    {{#each reviews}}
+                        <div class="col-md-12 card bg-white p-4 mb-2">
+                            <div class="stars">{{#stars this.therapist_rating}}{{/stars}}</div>
                             <p>{{this.review}}</p>
                         </div>
 
@@ -153,12 +165,12 @@ jQuery(document).ready(function ($) {
         type: "POST",
         url: "/rate",
         data: {
-            for: "{{therapist._id}}",
+            for: "{{this.therapist.0._id}}",
             rating,
             review: document.querySelector('textarea').value
         },
         success: (data)=> {
-            console.log('SENT ' + data);
+            window.location.reload(false);
         }
     });
     $stars.popover('hide');
