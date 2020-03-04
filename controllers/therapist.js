@@ -5,11 +5,11 @@ const Group = require('../models/Group');
 exports.searchTherapists = async (req, res, next) =>  {
     const therapists = await Therapist.find({ name: { $regex: req.params.query, '$options' : 'i' } }) // Get therapists by name
     const results = therapists.map(async (therapist) => { // Calculate star averages for each therapist
+    let group = {};
+        if(therapist.group.length > 0) { // if the therapist belongs to a group
+            group = await Group.findOne({ _id: therapist.group }, function(err, group) { if(err) { return console.log(err); } return group });  // Sloppy... Learn how to aggregate correctly.
+        }
         if (therapist.therapist_rating.length > 0) { // if the therapist has ratings
-            if(therapist.group.length > 0) { // if the therapist belongs to a group
-                const group = await Group.findOne({ _id: therapist.group }, function(err, group) { if(err) { return console.log(err); } return group });  // Sloppy... Learn how to aggregate correctly.
-                therapist.group = group
-            }
             const therapistWithAverage = await Therapist.aggregate([
                 { $match: { _id: therapist._id} },
                 { $unwind: "$therapist_rating" },
@@ -33,7 +33,7 @@ exports.searchTherapists = async (req, res, next) =>  {
                         ratings: { $push: { num: "$_id.num", count: "$count" }}
                     }
                 },
-                { $project: {_id:therapist._id, name:"$_id.name", description: therapist.description, imageUrl: therapist.imageUrl, averageRating: "$_id.avg", ratings: 1}},
+                { $project: {_id:therapist._id, name:"$_id.name", description: therapist.description, group, imageUrl: therapist.imageUrl, averageRating: "$_id.avg", ratings: 1}},
             ])
             return therapistWithAverage
         } else {
@@ -87,11 +87,9 @@ exports.showTherapist = async (req, res) => {
     let group = await Group.findById(therapist.group);
 
     async function checkIfAlreadyReviewed(therapist) {
-        console.log('USER', String(req.user._id))
         if(req.user) {
             result = await therapist.therapist_rating.map((review) => {
                 if (String(req.user._id) === String(review.by)) {
-                    console.log(String(review.by))
                     return review
                 }
             });
