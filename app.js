@@ -63,7 +63,10 @@ hbs = exphbs.create({
       } return html + '</div>';
     },
     toFixed: (num) => {
-      return num.toFixed(1)
+      if(num % 1 != 0) {
+        return num.toFixed(1)
+      }
+      return num
     }
   }
 });
