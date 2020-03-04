@@ -87,13 +87,16 @@ exports.showTherapist = async (req, res) => {
     let group = await Group.findById(therapist.group);
 
     async function checkIfAlreadyReviewed(therapist) {
-        result = await therapist.therapist_rating.map((review) => {
-            if (String(req.user._id) === String(review.by)) {
-                return review
-            }
-        });
-
-        return result
+        console.log('USER', String(req.user._id))
+        if(req.user) {
+            result = await therapist.therapist_rating.map((review) => {
+                if (String(req.user._id) === String(review.by)) {
+                    console.log(String(review.by))
+                    return review
+                }
+            });
+            return result;
+        }
     }
 
 
@@ -130,7 +133,6 @@ exports.showTherapist = async (req, res) => {
             return [therapist]
         }
     }
-
     res.render('viewTherapist', {
         title: therapist.name,
         therapist: await checkIfTherapistHasReviews(therapist),

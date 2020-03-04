@@ -34,7 +34,7 @@
         </div>
         <div class="w-100 p-5 {{#if user}}bg-primary{{else}}dark-blue-bg{{/if}} text-light">
             {{#if user}}
-                {{#if reviewed}}
+                {{#if this.reviewed.0.therapist_rating}}
                 <h3 class="m-5 text-center">You rated {{this.therapist.0.name}} <strong>{{this.reviewed.0.therapist_rating}} stars.</strong></h3>
                     {{else}}
                      <p class="lead text-center">Rate your experience with <strong>{{this.therapist.0.name}}</strong>
