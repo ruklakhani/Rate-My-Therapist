@@ -73,6 +73,14 @@ exports.getRate = (req, res) => {
   });
 };
 
+exports.postRate = (req, res) => {
+    Therapist.update({ _id: req.body.for }, { $push: { therapist_rating: { review: req.body.review, therapist_rating: parseInt(req.body.rating) } } }).then((err, therapist) => {
+        if(err) return req.flash("errors", { msg: err });
+        req.flash("success", { msg: `Review for <strong>${therapist.name}</strong> has been submitted!` });
+        res.redirect('/');
+    });
+}
+
 exports.showTherapist = async (req, res) => {
     let therapist = await Therapist.findById(req.params.id);
     let group = await Group.findById(therapist.group);

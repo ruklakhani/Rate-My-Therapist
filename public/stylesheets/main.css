@@ -21,3 +21,24 @@
 	width: 110px;
 	height: 110px;
 }
+
+.oneStar {
+	color: #44370f;
+  }
+
+  .twoStars {
+	color: #96781e;
+  }
+
+  .threeStars {
+
+	color: #e2b52e;
+  }
+
+  .fourStars {
+	color: #f1ba12;
+  }
+
+  .fiveStars {
+	color: #f3cb06;
+  }

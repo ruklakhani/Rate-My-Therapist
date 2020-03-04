@@ -12,7 +12,7 @@
             <img src="{{therapist.imageUrl}}" class="img-fluid rounded w-100" alt="{{therapist.name}}">
         </div>
         <div class="col-md-9 m-3">
-            <h4 class="card-title mb-0"><strong>{{therapist.name}}</strong></h4>
+            <h1 class="card-title mb-0 display-5"><strong>{{therapist.name}}</strong></h1>
             <p class="card-text"><a class="text-secondary" href="/group/{{group._id}}">{{group.name}}</a></p>
             <p class="card-text">
                 {{therapist.description}}
@@ -26,14 +26,45 @@
                 {{therapist.therapist_rating.length}} total reviews
             </p>
         </div>
+        <div class="w-100 p-5 {{#if user}}bg-primary{{else}}dark-blue-bg{{/if}} text-light">
+            {{#if user}}
+                <p class="lead text-center">Rate your experience with <strong>{{therapist.name}}</strong>
+                    <div class="m-4">
+                         <span id="rateMe">
+                            <i class="far fa-star py-2 px-1 rate-popover" data-index="0" data-html="true" data-toggle="popover"
+                            data-placement="top" title="Very bad"></i>
+                            <i class="far fa-star py-2 px-1 rate-popover" data-index="1" data-html="true" data-toggle="popover"
+                            data-placement="top" title="Poor"></i>
+                            <i class="far fa-star py-2 px-1 rate-popover" data-index="2" data-html="true" data-toggle="popover"
+                            data-placement="top" title="OK"></i>
+                            <i class="far fa-star py-2 px-1 rate-popover" data-index="3" data-html="true" data-toggle="popover"
+                            data-placement="top" title="Good"></i>
+                            <i class="far fa-star py-2 px-1 rate-popover" data-index="4" data-html="true" data-toggle="popover"
+                            data-placement="top" title="Excellent"></i>
+                        </span>
+                    </div>
+                </p>
+            {{else}}
+                <h3 class="m-5 text-center"><a href="/login">Login</a> to leave a review!</h3>
+            {{/if}}
+        </div>
         <div class="card-footer w-100 text-muted">
-            <h3 class="mt-4">Reviews </h3>
+            <h3 class="mt-4"><strong>Reviews</strong></h3>
             <div class="card-body">
             <!-- reviews -->
             {{#if therapist.therapist_rating}}
                 <!-- For each rating -->
-                {{#each therapist.therapist_rating}}
-                    {{#unless @first}}<hr>{{/unless}}
+                <div class="row">
+                    {{#each therapist.therapist_rating}}
+                        <div class="col-md-3 card bg-white p-4 m-2">
+                            <p>{{this.review}}</p>
+                        </div>
+
+
+
+
+                
+                    {{!-- {{#unless @first}}<hr>{{/unless}}
                         <!-- rating num -->
                     {{this.therapist_rating}}/5<br>
                     <!-- stars for rating average -->
@@ -41,10 +72,114 @@
                     <!-- reviewer's name -->
                     <!-- {{this.name}}<br>-->
                     <!-- review text -->
-                    {{this.review}}<br><br>
-                {{/each}}
+                    {{this.review}}<br><br> --}}
+                    {{/each}}
+                </div>
             {{/if}}
             </div>
         </div>
     </div>
 </div>
+
+
+<script>
+
+var $stars;
+
+jQuery(document).ready(function ($) {
+
+    let rating = 0;
+    let modalIsOpen = false;
+
+  // Custom whitelist to allow for using HTML tags in popover content
+  var myDefaultWhiteList = $.fn.tooltip.Constructor.Default.whiteList
+  myDefaultWhiteList.textarea = [];
+  myDefaultWhiteList.button = [];
+
+  $stars = $('.rate-popover');
+
+  $stars.on('mouseover', function () {
+      if(!modalIsOpen) {
+        var index = $(this).attr('data-index');
+        markStarsAsActive(index);
+      }
+  });
+
+  function markStarsAsActive(index) {
+    unmarkActive();
+
+    for (var i = 0; i <= index; i++) {
+      $($stars.get(i)).addClass('fas');
+      switch (index) {
+        case '0':
+          $($stars.get(i)).addClass('oneStar');
+          rating = 1;
+          break;
+        case '1':
+          $($stars.get(i)).addClass('twoStars');
+          rating = 2;
+          break;
+        case '2':
+          $($stars.get(i)).addClass('threeStars');
+          rating = 3;
+          break;
+        case '3':
+          $($stars.get(i)).addClass('fourStars');
+          rating = 4;
+          break;
+        case '4':
+          $($stars.get(i)).addClass('fiveStars');
+          rating = 5;
+          break;
+      }
+    }
+  }
+
+  function unmarkActive() {
+    $stars.removeClass('oneStar twoStars threeStars fourStars fiveStars fas');
+  }
+
+  $stars.on('click', function () {
+    $stars.popover('hide');
+    modalIsOpen = true;
+  });
+
+  // Submit, you can add some extra custom code here
+  // ex. to send the information to the server
+  $('#rateMe').on('click', '#voteSubmitButton', function (e) {
+      console.log(rating);
+      console.log(document.querySelector('textarea').value)
+    $.ajax({
+        type: "POST",
+        url: "/rate",
+        data: {
+            for: "{{therapist._id}}",
+            rating,
+            review: document.querySelector('textarea').value
+        },
+        success: (data)=> {
+            console.log('SENT ' + data);
+        }
+    });
+    $stars.popover('hide');
+  });
+
+  // Cancel, just close the popover
+  $('#rateMe').on('click', '#closePopoverButton', function () {
+    $stars.popover('hide');
+  });
+
+});
+
+$(function () {
+  $('.rate-popover').popover({
+    // Append popover to #rateMe to allow handling form inside the popover
+    container: '#rateMe',
+    // Custom content for popover
+    content: `<div class="my-0 py-0"> <textarea type="text" style="font-size: 0.78rem" class="md-textarea form-control py-0" placeholder="Write us what can we improve" rows="3"></textarea> <button id="voteSubmitButton" type="submit" class="btn btn-sm btn-primary">Submit!</button> <button id="closePopoverButton" class="btn btn-flat btn-sm">Close</button>  </div>`
+  });
+  $('.rate-popover').tooltip();
+});
+
+
+</script>

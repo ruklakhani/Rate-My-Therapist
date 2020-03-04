@@ -51,17 +51,20 @@ hbs = exphbs.create({
   helpers: {
     // {{#stars <rating average here>}}{{/stars}}  --will output--> html for stars!
     stars: function (avg) {
-      var html = '';
+      var html = '<div class="text-warning">';
       for(var i = 0; i < 5; ++i) {
         if (avg - i >= 1) {
-          html += "<i class='star fa fa-star' aria-hidden='true'></i>"
+          html += "<i class='star fas fa-star' aria-hidden='true'></i>"
         } else if (avg - i >= .5) {
           html += "<i class='star fas fa-star-half' aria-hidden='true'></i>"
         } else {
-          html += "<i class='star fa fa-star-o' aria-hidden='true'></i>"
+          html += "<i class='star fas fa-star-o' aria-hidden='true'></i>"
         }
-      } return html;
+      } return html + '</div>';
     },
+    toFixed: (num) => {
+      return num.toFixed(1)
+    }
   }
 });
 
@@ -108,7 +111,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 app.use((req, res, next) => {
-  if ((req.path === '/api/upload')) {
+  if ((req.path === '/api/upload') || (req.path === '/rate')) {
     // Multer multipart/form-data handling needs to occur before the Lusca CSRF check.
     next();
   } else {
@@ -148,6 +151,7 @@ app.use('/webfonts', express.static(path.join(__dirname, 'node_modules/@fortawes
  */
 app.get('/', homeController.index);
 app.get('/rate', therapistController.getRate);
+app.post('/rate', therapistController.postRate);
 app.get('/add', passportConfig.isAuthenticated, therapistController.getAddForm);
 app.post('/add', passportConfig.isAuthenticated, therapistController.addTherapist);
 app.get('/login', userController.getLogin);
