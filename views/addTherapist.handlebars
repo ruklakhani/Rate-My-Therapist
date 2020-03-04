@@ -6,7 +6,7 @@
         <form id="add-form" method="POST" action="/add">
             <input type="hidden" name="_csrf" value="{{_csrf}}" />
             <label for="therapistName" class="mb-2">Name</label>
-            <input class="mb-2 form-control mb-4" name="therapistName" type="text" placeholder="Bill Smith" required="true" autofocus="true">
+            <input class="mb-2 form-control mb-4" name="therapistName" type="text" placeholder="Bill Smith" required="true" autocomplete="off" autofocus="true">
             <label for="groupSelector">Therapy Group</label>
             <select class="selectpicker mb-4" data-live-search="true" name="groupSelector" id="groupSelector" data-style="btn-secondary">
                 {{#each groups}}
