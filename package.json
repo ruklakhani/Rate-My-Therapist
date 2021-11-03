@@ -71,7 +71,7 @@
     "stripe": "^7.15.0",
     "tumblr.js": "^2.0.2",
     "twit": "^2.2.11",
-    "validator": "^12.1.0"
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
